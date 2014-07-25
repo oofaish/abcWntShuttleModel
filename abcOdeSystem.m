@@ -10,9 +10,14 @@ function [ dy ] = abcOdeSystem( t, y, params )
     %Dsh = Dishevelled
     %P   = Phosphate
     
+    if( min( y ) < -1 )
+        one = 1;
+    end
+    
+                           
     conserved = params.conserved;
     
-    Yo      = y(  1 ); %open DC- degrades B
+    Yo      = y(  1 ); %open DC- degrades B                                                         
     X       = y(  2 ); %Beta-catenine
     
     CXY     = y(  3 ); %DC + B
@@ -75,7 +80,7 @@ function [ dy ] = abcOdeSystem( t, y, params )
     dy(  7 ) = - k( 9 ) *  Yc * P + ( k( 10 )+ k( 11 ) ) * CYP;
     %dy(  8 ) = k( 9 ) * Yc * P - ( k( 10 ) + k( 11 ) ) * CYP;
     dy(  8 ) = - k( 12 ) * Yon * Xn + ( k( 13 ) + k( 14 ) ) * CXYn - k( 16 ) * Yon * Dan + k( 17 ) * CYDn + k( 21 ) *  CYPn;
-    dy(  9 ) = - k( 24 ) *  Xn + k( 25 ) * X - k( 15 ) * Xn - k( 12 ) * Yon * Xn + k( 13 ) * CXYn - k( 30 ) * Xn * Tn + k( 31 ) * CXTn;
+    dy(  9 ) = - ( k( 24 ) + k( 15 ) ) *  Xn + k( 25 ) * X - k( 12 ) * Yon * Xn + k( 13 ) * CXYn - k( 30 ) * Xn * Tn + k( 31 ) * CXTn;
     dy( 10 ) = k( 12 ) * Yon * Xn - ( k( 13 ) + k( 14 ) ) * CXYn;
     dy( 11 ) = k( 22 ) * Yc - k( 23 ) * Ycn + k( 18 ) * CYDn - k( 19 ) * Ycn * Pn + k( 20 ) * CYPn;
     dy( 12 ) = k( 26 ) * Da - k( 27 ) * Dan - k( 16 ) * Yon * Dan + ( k( 17 ) + k( 18 ) ) * CYDn;
