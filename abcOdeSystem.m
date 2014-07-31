@@ -35,7 +35,7 @@ function [ dy ] = abcOdeSystem( t, y, params )
     Dan     = y( 12 ); %Active Dsh in Nucleus, can close DC, so MORE B.
     CYDn    = y( 13 ); %DC + Dsh
     
-    CYPn    = conserved( 1 ) - ( Yo + CXY + Yc + CYD + CYP + Yon + Ycn + CYDn );
+    CYPn    = conserved( 1 ) - ( Yo + CXY + Yc + CYD + CYP + Yon + Ycn + CYDn + CXYn );
         %y( 16 ); %DC + Phosphate in nucleus
     Pn      = conserved( 4 ) - CYPn; %y( 15 ); 
     

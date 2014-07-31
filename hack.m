@@ -1,6 +1,6 @@
 
 close all;
-tRange = [ 0, 50 ];
+tRange = [ 0, 100 ];
 
 if( 1 )
     
@@ -78,7 +78,7 @@ params.conserved = conserved;
 
 options = odeset( 'AbsTol', 1e-7 );
 
-k4s = [ 20, 0:0.05:1, 1:0.5:5];%originally this goes a lot higher
+k4s = [ 90, 0:0.05:1, 1:0.5:5];%originally this goes a lot higher
 %k4s = 0:1:20;%originally this goes a lot higher
 %k3s = 0:20:310;
 k28s = 0:0.1:2;
@@ -105,7 +105,7 @@ figure( 'position', [ 100 100 1500 1000 ], 'name', 'Go Bull Frogs', 'NumberTitle
 pause( 0.1 );
 
 for thisK = ks
-    k( kIndex ) = thisK;
+    %k( kIndex ) = thisK;
     
     if( thisK > 0.5 )
         one = 1;
@@ -148,7 +148,7 @@ for thisK = ks
         %axis( [ min( y019s ), max( y019s ), min( 0, min( stuffc ) ), max( 2, max( stuffc ) ) ] );
         
         yFinals( i ) = y( end, yIndex ); %round( y( end, 14 ) * 1000 ) / 1000;
-        kPlots(  i ) = thisK;
+         kPlots(  i ) = thisK;
         
         subplot( 321 );
         plot( kPlots( 1:i ), yFinals( 1:i ), '.', 'LineWidth', 2 );
