@@ -1,101 +1,35 @@
 
 close all;
-tRange = [ 0, 100 ];
+tRange = [ 0, 800 ];
 
-if( 1 )
-    
-    k = [92.331732, 0.86466471, 79.9512906, 97.932525, 1, 3.4134082, 0.61409879, 0.61409879, 3.4134082, 0.98168436,  ...
-         0.981684, 4.7267833, 0.17182818, 0.68292191, 1.0, 3.2654672, 0.61699064, 0.61699064, 37.913879, 0.86466471, ...
-         0.86466471, 0.99326205, 0.99326205, 1.0, 5.9744464, 1.7182818, 1.7182818, 1.7182818, 1.7182818, 0.55950727, ...
-         1.0117639 ];
-    %               y        D        P      Pn       T
-    conserved = [ 16.4734, 4.9951, 1.60063, 1.20891, 2.77566 ];
-    y0 = rand( 14, 1 );
-    
-    %k( 1 ) = k( 1 ) / 50;
-    %k( 3 ) = k( 3 ) / 50;
-    %k( 19 ) = k( 19 ) / 50;
-    %k(12 )= k( 12 ) * 10;
-    
-    %deal with Dsh amount
-    %tmp1 = [ 0; rand( 4, 1 ); 1 ];
-    tmp1 = [ 0; 0.20; 0.40; 0.60; 0.80; 1 ];
-    tmp1 = sort( tmp1 );
-    tmp1 = diff( tmp1 );
-    y0(  5 ) = conserved( 2 ) * tmp1( 1 );
-    y0( 12 ) = conserved( 2 ) * tmp1( 2 );
-    y0( 13 ) = conserved( 2 ) * tmp1( 3 );
-    y0(  6 ) = conserved( 2 ) * tmp1( 4 );
-    %rest go to Di
-    
-    %randomly distribute the y/DC amount
-    %tmp1 = [ 0; rand( 9, 1 ); 1 ];
-    tmp1 = 0:(1/10):1;
-    tmp1 = sort( tmp1 );
-    tmp1 = diff( tmp1 );
-    yIndices = [ 1, 3, 4, 8, 10, 11 ]; %6 and 12 already set.
-    for i = 1:length( yIndices )
-        y0( yIndices( i ) ) = tmp1( i ) * conserved( 1 );
-    end
-    
-    %P
-    y0( 7 ) = rand( 1, 1 ) * conserved( 3 );
-    
-    %Pn - already calculated in DC amount
+id = 2;
 
-    %randomly distribute the TCF amount
-    y0( 14 ) = y0( 14 ) * conserved( 5 );
-    
-    y0( 2 ) = 5;
-    y0( 9 ) = 0.5;
-    
-    %k( 12 ) = k( 12 ) / 2;
-    %k( 16 ) = k( 16 ) / 2;
-    %X is too small in cytoplasm
-    %k(1) = 50;
-    %k(25) = k(25)/2;
-    %k(24) = k(24)*10;
-    
-    %for k5
-    if( 0 )
-        k( 24 ) = 1;
-        k( 30 ) = 20;
-        k( 12 ) = 20;
-        k( 25 ) = 0;
-        k( 13 ) = 0;
-        k( 31 ) = 0;
-    end
-    
-else
-    k = rand( 31, 1 );
-    y0 = rand( 14, 1 );
-    %y0( 18 ) = 0.9;
-end
+[ y0, k, conserved ] = abcInitiate( id );
 
 params = struct();
 
 params.conserved = conserved;
+params.id = id;
+options = odeset( 'AbsTol', 1e-3 );
 
-options = odeset( 'AbsTol', 1e-7 );
-
-k4s = [ 90, 0:0.05:1, 1:0.5:5];%originally this goes a lot higher
-%k4s = 0:1:20;%originally this goes a lot higher
-%k3s = 0:20:310;
-k28s = 0:0.1:2;
+%k4s = [ 0:0.025:1, 1:0.5:5];%originally this goes a lot higher
+%k4s = 80:2:130;%originally this goes a lot higher
+k4s = 95:0.1:100;
+%k3s = 40:1:80;
+k3s = 60:1:80;
+k28s = 1.5:0.1:3;
 k5s  = 0:0.1:2;
 k14s = 0:2:50;
 
-kIndex = 4;
-ks     = k4s;
+kIndex = 28;
+ks     = k28s;
 
 yIndex = 14;
 
 %y014s = [ 0:0.05:0.25, 0.30:0.25:conserved( 5 ), conserved( 5 ) ];
-y014s = [ 0:0.4:conserved( 5 ), conserved( 5 ) ];
+y014s = [ 0:0.4:conserved( 5 ), conserved( 5 ) + 100 ];
 stuffc2 = zeros( length( y014s ), 1 );
 i = 0;
-
-%k( 28 ) = 100;
 
 yFinals = zeros( length( ks ) * length( y014s ), 1 );
 kPlots  = zeros( length( yFinals ),              1 );
@@ -105,7 +39,7 @@ figure( 'position', [ 100 100 1500 1000 ], 'name', 'Go Bull Frogs', 'NumberTitle
 pause( 0.1 );
 
 for thisK = ks
-    %k( kIndex ) = thisK;
+    k( kIndex ) = thisK;
     
     if( thisK > 0.5 )
         one = 1;

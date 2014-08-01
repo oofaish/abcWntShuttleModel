@@ -17,7 +17,7 @@ function [ dy ] = abcOdeSystem( t, y, params )
                            
     conserved = params.conserved;
     
-    Yo      = y(  1 ); %open DC- degrades B                                                         
+    %Yo      = y(  1 ); %open DC- degrades B                                                         
     X       = y(  2 ); %Beta-catenine
     
     CXY     = y(  3 ); %DC + B
@@ -35,7 +35,10 @@ function [ dy ] = abcOdeSystem( t, y, params )
     Dan     = y( 12 ); %Active Dsh in Nucleus, can close DC, so MORE B.
     CYDn    = y( 13 ); %DC + Dsh
     
-    CYPn    = conserved( 1 ) - ( Yo + CXY + Yc + CYD + CYP + Yon + Ycn + CYDn + CXYn );
+    CYPn    = y( 1 );%conserved( 1 ) - ( Yo + CXY + Yc + CYD + CYP + Yon + Ycn + CYDn + CXYn );
+    
+    Yo      = conserved( 1 )  - ( CXY + Yc + CYD + Yon + CXYn + Ycn + CYDn + CYPn + CYP );
+    
         %y( 16 ); %DC + Phosphate in nucleus
     Pn      = conserved( 4 ) - CYPn; %y( 15 ); 
     
@@ -71,7 +74,7 @@ function [ dy ] = abcOdeSystem( t, y, params )
     
     dy = zeros( 14, 1 );
    
-    dy(  1 ) = k( 1 ) * Yo * X + ( k( 2 ) + k( 3 ) ) * CXY - k( 6 ) * Yo * Da + k( 7 ) * CYD + k( 11 ) * CYP;
+    %dy(  1 ) = k( 1 ) * Yo * X + ( k( 2 ) + k( 3 ) ) * CXY - k( 6 ) * Yo * Da + k( 7 ) * CYD + k( 11 ) * CYP;
     dy(  2 ) = k( 4 ) - k( 5 ) * X + k( 24 ) * Xn - k( 25 ) * X - k( 1 ) * Yo * X + k( 2 ) * CXY;
     dy(  3 ) = k( 1 ) * Yo * X - ( k( 2 ) + k( 3 ) ) * CXY;
     dy(  4 ) = -k( 22 ) * Yc + k( 23 ) * Ycn + k( 8 ) * CYD - k( 9 ) * Yc * P + k( 10 ) * CYP;
@@ -86,7 +89,7 @@ function [ dy ] = abcOdeSystem( t, y, params )
     dy( 12 ) = k( 26 ) * Da - k( 27 ) * Dan - k( 16 ) * Yon * Dan + ( k( 17 ) + k( 18 ) ) * CYDn;
     dy( 13 ) = k( 16 ) * Yon * Dan - ( k( 17 ) + k( 18 ) ) * CYDn;
     %dy( 15 ) = -k( 19 ) * Ycn * Pn + ( k( 20 ) + k( 21 ) ) * CYPn;
-    %dy( 16 ) = k( 19 ) * Ycn * Pn - ( k( 20 ) + k( 21 ) ) * CYPn;
+    dy( 1 ) = k( 19 ) * Ycn * Pn - ( k( 20 ) + k( 21 ) ) * CYPn;
     %dy( 17 ) = -k( 28 ) * Di + k( 29 ) * Da;
     %dy( 18 ) = -k( 30 ) * Xn * Tn + k( 31 ) * CXTn;
     dy( 14 ) = k( 30 ) * Xn * Tn - k( 31 ) * CXTn;
