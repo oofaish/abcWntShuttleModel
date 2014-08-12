@@ -1,5 +1,6 @@
 
 close all;
+clear;
 tRange = [ 0, 800 ];
 
 id = 2;
@@ -7,6 +8,8 @@ id = 2;
 [ y0, k, conserved ] = abcInitiate( id );
 
 params = struct();
+
+conserved( 5 ) = 122;
 
 params.conserved = conserved;
 params.id = id;
@@ -28,6 +31,7 @@ yIndex = 14;
 
 %y014s = [ 0:0.05:0.25, 0.30:0.25:conserved( 5 ), conserved( 5 ) ];
 y014s = [ 0:0.4:conserved( 5 ), conserved( 5 ) + 100 ];
+y014s = [20.0, 40.0, 60.0, 80.0, 100.0, 120.0];
 stuffc2 = zeros( length( y014s ), 1 );
 i = 0;
 
@@ -63,12 +67,18 @@ for thisK = ks
     
     
     for y014 = y014s
+        
+        %params.conserved( 5 ) = conserved( 5 ) + y014 - 1;
         %stuffc  = zeros( length( k4s ), 1 );
         y0( yIndex ) = y014;
         i = i + 1;        
         params.k = k;
         [ t, y ] = abcRunOdeSystem( y0, params, tRange, options );
 
+        if( min( y( end, :) ) < 0 )
+            dispy( '------------->NEGATIVE FINAL VALUE' )
+        end
+        
         %subplot( 131 );
         %plot( t, y(:, 14 ) );
 
